@@ -9,7 +9,7 @@ This is a linter for Civilization II rule files. It's a command line tool you ca
 ./civ2lint
 
 # lint somewhere else
-./civ2lint -path ~/Downloads/example
+./civ2lint -path ~/Downloads/example/
 ```
 
 ## Current Features
