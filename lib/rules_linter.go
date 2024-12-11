@@ -3,6 +3,7 @@ package lib
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -52,5 +53,46 @@ func (cl *Civ2Linter) LintAdvances() error {
 		cl.Rules.Civilize[AdvanceCodes[i]] = advance
 	}
 
+	for code, advance := range cl.Rules.Civilize {
+		if code == advance.Preq1 || code == advance.Preq2 {
+			return fmt.Errorf("advance cannot be its own prerequisite: %s, %v", code, advance)
+		}
+		if (advance.Preq1 == "no" && advance.Preq2 != "no") || (advance.Preq1 != "no" && advance.Preq2 == "no") {
+			return fmt.Errorf("both prerequisites must be no: %s, %v", code, advance)
+		}
+
+		err := cl.FindLoops([]string{}, code)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (cl *Civ2Linter) FindLoops(seen []string, next string) error {
+	if next == "nil" || next == "no" {
+		return nil
+	}
+	if slices.Contains(seen, next) {
+		return fmt.Errorf("found loop: %v, %s", seen, next)
+	}
+
+	seen = append(seen, next)
+	advance, ok := cl.Rules.Civilize[next]
+	if !ok {
+		return fmt.Errorf("advance does not exist: %s, %v", next, seen)
+	}
+	var err error
+	err = cl.FindLoops(seen, advance.Preq1)
+	if err != nil {
+		return err
+	}
+	seen2 := make([]string, len(seen))
+	copy(seen2, seen)
+	err = cl.FindLoops(seen2, advance.Preq2)
+	if err != nil {
+		return err
+	}
 	return nil
 }
