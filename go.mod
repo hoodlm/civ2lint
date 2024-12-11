@@ -1,4 +1,4 @@
-module github.com/leonsp-ai/civ2lint
+module github.com/leonsp/civ2lint
 
 go 1.23.2
 

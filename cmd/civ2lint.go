@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/leonsp-ai/civ2lint/lib"
+	"github.com/leonsp/civ2lint/lib"
 )
 
 func Init() {
