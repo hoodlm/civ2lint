@@ -11,10 +11,16 @@ import (
 
 func Init() {
 	var c lib.Config
+	var usage bool
 
 	flag.StringVar(&c.Path, "path", ".", "Path to the game, mod, or scenario directory")
+	flag.BoolVar(&usage, "help", false, "Print usage instructions")
 	flag.Parse()
 
+	if usage {
+		flag.Usage()
+		return
+	}
 	logger, _ := zap.NewProduction()
 	defer logger.Sync() // flushes buffer, if any
 	sugar := logger.Sugar()
