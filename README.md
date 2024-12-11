@@ -1,10 +1,17 @@
 # civ2lint
 
-Linter for Civilization II rule files. The linter is not yet functional.
+This is a linter for Civilization II rule files. It's a command line tool you can use to detect known issues.
 
-Goals:
-- Command line tool
-- Detect errors such as technology prerequisite loops in rules.txt
+## Usage
 
-Non-goals:
-- Graphical user interface
+```sh
+# lint in the current folder
+./civ2lint
+
+# lint somewhere else
+./civ2lint -path ~/Downloads/example
+```
+
+## Current Features
+
+- Detect loops in the tech tree.
