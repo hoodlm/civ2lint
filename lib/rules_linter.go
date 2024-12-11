@@ -55,23 +55,26 @@ func (cl *Civ2Linter) LintAdvances() error {
 
 	for code, advance := range cl.Rules.Civilize {
 		if code == advance.Preq1 || code == advance.Preq2 {
-			return fmt.Errorf("advance cannot be its own prerequisite: %s, %v", code, advance)
+			cl.Rules.Errors = append(cl.Rules.Errors, fmt.Errorf("advance cannot be its own prerequisite: %s, %v", code, advance))
 		}
 		if (advance.Preq1 == "no" && advance.Preq2 != "no") || (advance.Preq1 != "no" && advance.Preq2 == "no") {
-			return fmt.Errorf("both prerequisites must be no: %s, %v", code, advance)
+			cl.Rules.Errors = append(cl.Rules.Errors, fmt.Errorf("both prerequisites must be no: %s, %v", code, advance))
 		}
 
 		err := cl.FindLoops([]string{}, code)
 		if err != nil {
-			return err
+			cl.Rules.Errors = append(cl.Rules.Errors, err)
 		}
 	}
 
+	if len(cl.Rules.Errors) > 0 {
+		return errors.Join(cl.Rules.Errors...)
+	}
 	return nil
 }
 
 func (cl *Civ2Linter) FindLoops(seen []string, next string) error {
-	if next == "nil" || next == "no" {
+	if next == "nil" || next == "no" || next == "..." {
 		return nil
 	}
 	if slices.Contains(seen, next) {

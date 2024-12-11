@@ -19,6 +19,7 @@ type Civ2Linter struct {
 
 type Civ2Rules struct {
 	Civilize map[string]Civilize
+	Errors   []error
 }
 
 type Civilize struct {

@@ -1,14 +1,15 @@
-package main
+package cmd
 
 import (
 	"flag"
+	"os"
 
 	"go.uber.org/zap"
 
 	"github.com/leonsp-ai/civ2lint/lib"
 )
 
-func main() {
+func Init() {
 	var c lib.Config
 
 	flag.StringVar(&c.Path, "path", ".", "Path to the game, mod, or scenario directory")
@@ -23,6 +24,7 @@ func main() {
 	cl := lib.New(c, sugar)
 	err := cl.Lint()
 	if err != nil {
-		panic(err)
+		sugar.Error(err)
+		os.Exit(1)
 	}
 }
